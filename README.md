@@ -56,6 +56,6 @@ int main(void)
 
 ```
 ## Authors:
-[fellohodhis](https://github.com/fellohodhis)
+[fellohodhis](https://github.com/fellohodhis) and
 [AchiraALX](https://github.com/AchiraALX)
 
