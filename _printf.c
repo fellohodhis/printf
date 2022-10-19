@@ -1,82 +1,77 @@
 #include "main.h"
-#include <stdlib.h>
+
 
 /**
- * check_for_specifiers - checks if there is a valid format specifier
- * @format: possible format specifier
- *
- * Return: pointer to valid function or NULL
+ * print_letter - prints single letter
+ * @format: the string format
+ * @index: index of the letterin the format
+ * Return: 1(the single letter)
  */
-static int (*check_for_specifiers(const char *format))(va_list)
-{
-	unsigned int i;
-	print_t p[] = {
-		{"c", print_c},
-		{"s", print_s},
-		{"i", print_i},
-		{"d", print_d},
-		{"u", print_u},
-		{"b", print_b},
-		{"o", print_o},
-		{"x", print_x},
-		{"X", print_X},
-		{"p", print_p},
-		{"S", print_S},
-		{"r", print_r},
-		{"R", print_R},
-		{NULL, NULL}
-	};
 
-	for (i = 0; p[i].t != NULL; i++)
-	{
-		if (*(p[i].t) == *format)
-		{
-			break;
-		}
-	}
-	return (p[i].f);
+int print_letter(const char *format, int index)
+{
+	char *str;
+	int l;
+
+	str = malloc(sizeof(char));
+
+	if (str == NULL)
+		return (-1);
+	str[0] = format[index];
+
+	l = _print_buf(str, 1);
+	free(str);
+
+	return (l);
 }
 
 /**
- * _printf - prints anything
- * @format: list of argument types passed to the function
+ * _printf - produces output according to a format
+ * @format: the input string
  *
  * Return: number of characters printed
  */
+
 int _printf(const char *format, ...)
 {
-	unsigned int i = 0, count = 0;
-	va_list valist;
-	int (*f)(va_list);
+	int i, len = 0, (*f)(va_list, char *), flag = 0;
+	char *buffer;
+	va_list args;
 
-	if (format == NULL)
+	va_start(args, format);
+	if (!format || (format[0] == '%' && !format[1]))
 		return (-1);
-	va_start(valist, format);
-	while (format[i])
+	for (i = 0; format && format[i] != '\0'; i++)
 	{
-		for (; format[i] != '%' && format[i]; i++)
+		if (format[i] == '%')
 		{
-			_putchar(format[i]);
-			count++;
+			f = get_pnt_funct(format, &i);
+			if (!f)
+			{
+				if ((format[i] == '\0') && flag == 0)
+				{
+					va_end(args);
+					return (-1);
+				}
+				else if (format[i] == '%')
+					len += print_letter(format, i);
+				else
+					len += print_letter(format, i - 1), flag = 1, i--;
+			}
+			else
+			{
+				buffer = malloc(sizeof(char) * 1024);
+				if (buffer == NULL)
+				{
+					va_end(args);
+					return (-1);
+				}
+				len += f(args, buffer), free(buffer);
+			}
 		}
-		if (!format[i])
-			return (count);
-		f = check_for_specifiers(&format[i + 1]);
-		if (f != NULL)
-		{
-			count += f(valist);
-			i += 2;
-			continue;
-		}
-		if (!format[i + 1])
-			return (-1);
-		_putchar(format[i]);
-		count++;
-		if (format[i + 1] == '%')
-			i += 2;
 		else
-			i++;
+			len += print_letter(format, i);
 	}
-	va_end(valist);
-	return (count);
+	va_end(args);
+	return (len);
 }
