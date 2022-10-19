@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
@@ -30,3 +31,17 @@ int print_r(va_list r);
 int print_R(va_list R);
 
 #endif
+=======
+#ifndef MAIN_H
+#define MAIN_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
+
+int _printf(const char *format, ...);
+
+#endif /* MAIN_H */
+
+>>>>>>> b45ef1b369d5f6d17aeb95460e4aed4530cbb0d0
