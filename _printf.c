@@ -1,77 +1,62 @@
 #include "main.h"
-
-
-/**
- * print_letter - prints single letter
- * @format: the string format
- * @index: index of the letterin the format
- * Return: 1(the single letter)
- */
-
-int print_letter(const char *format, int index)
-{
-	char *str;
-	int l;
-
-	str = malloc(sizeof(char));
-
-	if (str == NULL)
-		return (-1);
-	str[0] = format[index];
-
-	l = _print_buf(str, 1);
-	free(str);
-
-	return (l);
-}
+#include <stdio.h>
 
 /**
- * _printf - produces output according to a format
- * @format: the input string
+ * _printf - a function that produces output according to a format
+ * @format: format string
  *
  * Return: number of characters printed
  */
-
 int _printf(const char *format, ...)
 {
-	int i, len = 0, (*f)(va_list, char *), flag = 0;
-	char *buffer;
 	va_list args;
+	int i = 0;
 
 	va_start(args, format);
-	if (!format || (format[0] == '%' && !format[1]))
-		return (-1);
-	for (i = 0; format && format[i] != '\0'; i++)
+	while (format[i] != '\0')
 	{
 		if (format[i] == '%')
 		{
-			f = get_pnt_funct(format, &i);
-			if (!f)
+			i++;
+			switch (format[i])
 			{
-				if ((format[i] == '\0') && flag == 0)
-				{
-					va_end(args);
-					return (-1);
-				}
-				else if (format[i] == '%')
-					len += print_letter(format, i);
-				else
-					len += print_letter(format, i - 1), flag = 1, i--;
-			}
-			else
-			{
-				buffer = malloc(sizeof(char) * 1024);
-				if (buffer == NULL)
-				{
-					va_end(args);
-					return (-1);
-				}
-				len += f(args, buffer), free(buffer);
+				case 'c':
+					putchar(va_arg(args, int));
+					break;
+				case 'd':
+					printf("%d", va_arg(args, int));
+					break;
+				case 'f':
+					printf("%f", va_arg(args, double));
+					break;
+				case 's':
+					printf("%s", va_arg(args, char *));
+					break;
 			}
 		}
 		else
-			len += print_letter(format, i);
+		{
+			putchar(format[i]);
+		}
+		i++;
 	}
 	va_end(args);
-	return (len);
+	return (0);
 }
+
+/**
+ * The code above does the following
+ * The program starts at the beginning of the function.
+ * The while loop gets a character from the format string.
+ * If the character is NOT a %, it just prints the character.
+ * If it IS a %, it begins the switch statement.
+ * The switch statement takes the next character in the format string and
+ * looks at it.  If the character is a c, d, f, or s, the program knows
+ * what type of data to expect.
+ * The program uses va_arg() to get the next piece of data from the
+ * variable argument list.  va_arg() takes two parameters: the list and
+ * the type of data being passed.
+ * The program then uses printf() to print the data.  The data type
+ * determines the format string used in the printf() call.
+ * The program continues with the next character in the format string.
+ */
