@@ -1,62 +1,63 @@
 #include "main.h"
-#include <stdio.h>
+
+void print_buffer(char buffer[], int *buff_ind);
 
 /**
- * _printf - a function that produces output according to a format
- * @format: format string
- *
- * Return: number of characters printed
+ * _printf - produces output according to a format
+ * @format: the format
+ * Return: printed chars
  */
 int _printf(const char *format, ...)
 {
-	va_list args;
-	int i = 0;
+	int i, printed = 0, printed_chars = 0;
+	int flags, width, precision, size, buff_ind = 0;
+	va_list list;
+	char buffer[BUFF_SIZE];
 
-	va_start(args, format);
-	while (format[i] != '\0')
+	if (format == NULL)
+		return (-1);
+
+	va_start(list, format);
+
+	for (i = 0; format && format[i] != '\0'; i++)
 	{
-		if (format[i] == '%')
+		if (format[i] != '%')
 		{
-			i++;
-			switch (format[i])
-			{
-				case 'c':
-					putchar(va_arg(args, int));
-					break;
-				case 'd':
-					printf("%d", va_arg(args, int));
-					break;
-				case 'f':
-					printf("%f", va_arg(args, double));
-					break;
-				case 's':
-					printf("%s", va_arg(args, char *));
-					break;
-			}
+			buffer[buff_ind++] = format[i];
+			if (buff_ind == BUFF_SIZE)
+				print_buffer(buffer, &buff_ind);
+			/* write(1, &format[i], 1);*/
+			printed_chars++;
 		}
 		else
 		{
-			putchar(format[i]);
+			print_buffer(buffer, &buff_ind);
+			flags = get_flags(format, &i);
+			width = get_width(format, &i, list);
+			precision = get_precision(format, &i, list);
+			size = get_size(format, &i);
+			++i;
+			printed = handle_print(format, &i, list, buffer,
+					flags, width, precision, size);
+			if (printed == -1)
+				return (-1);
+			printed_chars += printed;
 		}
-		i++;
 	}
-	va_end(args);
-	return (0);
-}
+	print_buffer(buffer, &buff_ind);
 
+	va_end(list);
+
+	return (printed_chars);
+}
 /**
- * The code above does the following
- * The program starts at the beginning of the function.
- * The while loop gets a character from the format string.
- * If the character is NOT a %, it just prints the character.
- * If it IS a %, it begins the switch statement.
- * The switch statement takes the next character in the format string and
- * looks at it.  If the character is a c, d, f, or s, the program knows
- * what type of data to expect.
- * The program uses va_arg() to get the next piece of data from the
- * variable argument list.  va_arg() takes two parameters: the list and
- * the type of data being passed.
- * The program then uses printf() to print the data.  The data type
- * determines the format string used in the printf() call.
- * The program continues with the next character in the format string.
+ * print_buffer - prints buffer contents
+ * @buffer: array of chars
+ * @buff_ind: rep the length
  */
+void print_buffer(char buffer[], int *buff_ind)
+{
+	if (*buff_ind > 0)
+		write(1, &buffer[0], *buff_ind);
+
+	*buff_ind = 0;
