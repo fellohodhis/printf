@@ -2,11 +2,11 @@
 
 /**
  * get_size - gets the size specifier
- * 
+ *
  * @format: the format
- * 
+ *
  * @i: the index
- * 
+ *
  * Return: the size specifier
  */
 
