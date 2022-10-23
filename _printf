@@ -22,7 +22,7 @@ value
 - The s specifier will display a string that is provided
 .RS 3
 .B	eg:
-%s, "Hello, Holberton!" - > Hello, Holberton!
+%s, "Hello, School!" - > Hello, School!
 .RE
 
 .B % 

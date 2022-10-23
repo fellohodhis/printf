@@ -1,5 +1,5 @@
-#ifndef _HOLBERTON_H_
-#define _HOLBERTON_H_
+#ifndef _MAIN_H_
+#define _MAIN_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,4 +62,4 @@ int is_printable(int);
 char *cvrt_upper_hex(int i);
 mk_buffer cap_s_fmt(mk_buffer buff, va_list var);
 
-#endif /* _HOLBERTON_H_ */
+#endif /* _MAIN_H_ */
