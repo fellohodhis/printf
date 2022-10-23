@@ -1,4 +1,4 @@
-#include "holberton.h"
+#include "main.h"
 
 /**
 * cap_s_fmt - prints every string, except for non printable characters, those
