@@ -2,32 +2,33 @@
 
 /**
  * get_flags - calculates active flags
- * 
- * @format: the format
- * 
- * @i: the index
- * 
- * Return: the flags
+ * @format: formatted string to print arguments
+ * @i: take a parameter
+ * Return: flags
  */
-
 int get_flags(const char *format, int *i)
 {
-        int flags = 0;
+	/* - + 0 # ' ' */
+	/* 1 2 4 8 16 */
+	int j, curr_i;
+	int flags = 0;
+	const char FLAGS_CH[] = {'-', '+', '0', '#', ' ', '\0'};
+	const int FLAGS_ARR[] = {F_MINUS, F_PLUS, F_ZERO, F_HASH, F_SPACE, 0};
 
-        while (format[*i] == '+' || format[*i] == ' ' || format[*i] == '#'
-                        || format[*i] == '-' || format[*i] == '0')
-        {
-                if (format[*i] == '+')
-                        flags |= 1;
-                else if (format[*i] == ' ')
-                        flags |= 2;
-                else if (format[*i] == '#')
-                        flags |= 4;
-                else if (format[*i] == '-')
-                        flags |= 8;
-                else if (format[*i] == '0')
-                        flags |= 16;
-                ++(*i);
-        }
-        return (flags);
+	for (curr_i = *i + 1; format[curr_i] != '\0'; curr_i++)
+	{
+		for (j = 0; FLAGS_CH[j] != '\0'; j++)
+			if (format[curr_i] == FLAGS_CH[j])
+			{
+				flags |= FLAGS_ARR[j];
+				break;
+			}
+
+		if (FLAGS_CH[j] == 0)
+			break;
+	}
+
+	*i = curr_i - 1;
+
+	return (flags);
 }
